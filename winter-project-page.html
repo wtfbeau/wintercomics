@@ -1,0 +1,3539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Winter Comics - Comic Creator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --primary-light: #7dd3fc;
+        --primary-dark: #1a56db;
+        --primary-gradient: linear-gradient(90deg, #0558e1 0%, #38b8ff 100%);
+        --secondary: #343a40;
+        --text-light: #7b809a;
+        --bg-light: #f1f3f5;
+        --bg-white: #ffffff;
+        --danger: #fb2626;
+        --success: #10b981;
+        --border-light: #e5e5ea;
+        --box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.1);
+        --box-shadow-hover: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.15);
+        --border-radius-sm: 0.5rem;
+        --border-radius: 0.8rem;
+        --border-radius-lg: 1rem;
+        --transition-speed-fast: 0.2s;
+        --transition-speed-normal: 0.3s;
+        --transition-cubic: cubic-bezier(0.4, 0, 0.2, 1);
+
+        font-size: 10px;
+        font-family: 'Nunito', 'Lato', sans-serif;
+      }
+
+      body.dark-theme {
+        --primary: #5fa4fc;
+        --primary-light: #3072c2;
+        --primary-dark: #0f4c90;
+        --primary-gradient: linear-gradient(90deg, #2a65b7 0%, #5fa4fc 100%);
+        --secondary: #e0e0e0;
+        --text-light: #a0a0a0;
+        --bg-light: #1a1a1a;
+        --bg-white: #2c2c2c;
+        --border-light: #444444;
+        --box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2);
+        --box-shadow-hover: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.3);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-light);
+        color: var(--secondary);
+        font-family: 'Nunito', 'Lato', sans-serif;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: background-color var(--transition-speed-normal)
+            var(--transition-cubic),
+          color var(--transition-speed-normal) var(--transition-cubic);
+      }
+
+      /* HEADER STYLES */
+      .header {
+        background-color: var(--bg-white);
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        height: 6rem;
+        z-index: 10;
+        transition: background-color var(--transition-speed-normal)
+            var(--transition-cubic),
+          border-bottom var(--transition-speed-normal) var(--transition-cubic);
+        flex-shrink: 0;
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .brand-logo {
+        height: 3.5rem;
+        transition: opacity var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .brand-logo:hover {
+        opacity: 0.9;
+      }
+
+      #themeToggleBtn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-light);
+        padding: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color var(--transition-speed-fast)
+          var(--transition-cubic);
+      }
+
+      #themeToggleBtn:hover {
+        background-color: var(--bg-light);
+      }
+
+      #themeToggleBtn svg {
+        width: 2.2rem;
+        height: 2.2rem;
+        transition: color var(--transition-speed-fast) var(--transition-cubic),
+          transform var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      #themeToggleBtn:hover svg {
+        color: var(--primary);
+        transform: scale(1.1) rotate(15deg);
+      }
+
+      #themeToggleBtn:active svg {
+        transform: scale(0.9) rotate(0deg);
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 1rem 2rem;
+        border-radius: var(--border-radius);
+        border: none;
+        font-weight: 600;
+        font-size: 1.4rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .btn-primary {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: var(--box-shadow);
+      }
+
+      .btn-primary:hover {
+        transform: scale(1.03) translateY(-1px);
+        box-shadow: 0 0.6rem 1.2rem var(--primary-light);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98) translateY(0px);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--text-light);
+        color: var(--secondary);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: rgba(59, 130, 246, 0.05);
+        transform: translateY(-1px);
+      }
+
+      .btn-outline:active {
+        transform: scale(0.98) translateY(0px);
+      }
+
+      /* MAIN CONTAINER STYLES */
+      .main-container {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      /* TOOLS SIDEBAR STYLES */
+      .tools-sidebar {
+        width: 6.5rem;
+        background-color: var(--bg-white);
+        border-right: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 0;
+        gap: 1.2rem;
+        z-index: 5;
+        transition: background-color var(--transition-speed-normal)
+            var(--transition-cubic),
+          border-right var(--transition-speed-normal) var(--transition-cubic);
+        flex-shrink: 0;
+        box-shadow: inset -0.2rem 0 0.5rem rgba(0, 0, 0, 0.02);
+      }
+
+      .tool-btn {
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: var(--border-radius);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        color: var(--text-light);
+        position: relative;
+      }
+
+      .tool-btn:hover,
+      .tool-btn.active {
+        background-color: var(--bg-light);
+        color: var(--primary);
+      }
+
+      .tool-btn.active {
+        border-left: 3px solid var(--primary);
+        color: var(--primary-dark);
+      }
+
+      .tool-btn:active {
+        transform: scale(0.95);
+      }
+
+      .tool-btn svg {
+        width: 2.4rem;
+        height: 2.4rem;
+      }
+
+      .tool-label {
+        position: absolute;
+        font-size: 1rem;
+        bottom: 0.2rem;
+        color: var(--text-light);
+        font-weight: 600;
+        transition: color var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .tool-btn:hover .tool-label,
+      .tool-btn.active .tool-label {
+        color: var(--primary);
+      }
+
+      /* CENTRAL AREA STYLES */
+      .central-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .canvas-area {
+        flex: 1;
+        position: relative;
+        overflow: auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        background-color: var(--bg-light);
+        padding: 3rem 2rem 2rem 2rem;
+        transition: background-color var(--transition-speed-normal)
+          var(--transition-cubic);
+      }
+
+      .canvas {
+        background-color: var(--bg-white);
+        box-shadow: var(--box-shadow);
+        position: relative;
+        width: 80rem;
+        height: 120rem;
+        transform-origin: center;
+        transition: transform var(--transition-speed-normal)
+            var(--transition-cubic),
+          background-color var(--transition-speed-normal)
+            var(--transition-cubic);
+        flex-shrink: 0;
+        border-radius: 0.5rem;
+      }
+
+      body.dark-theme .canvas {
+        box-shadow: 0 0.4rem 1rem rgba(255, 255, 255, 0.05);
+      }
+
+      .canvas-controls {
+        position: absolute;
+        top: 3.5rem;
+        right: 2rem;
+        display: flex;
+        gap: 1rem;
+        background-color: var(--bg-white);
+        padding: 0.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        z-index: 6;
+      }
+
+      .canvas-control-btn {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: var(--border-radius-sm);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        background-color: var(--bg-white);
+        border: none;
+        color: var(--text-light);
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .canvas-control-btn:hover {
+        background-color: var(--bg-light);
+        color: var(--primary);
+      }
+
+      .canvas-control-btn:active {
+        transform: scale(0.9);
+      }
+
+      /* PAGES TIMELINE STYLES */
+      .pages-timeline {
+        height: 18rem;
+        background-color: var(--bg-white);
+        border-top: 1px solid var(--border-light);
+        padding: 1.5rem 2rem;
+        display: flex;
+        gap: 2rem;
+        overflow-x: auto;
+        align-items: center;
+        transition: background-color var(--transition-speed-normal)
+            var(--transition-cubic),
+          border-top var(--transition-speed-normal) var(--transition-cubic);
+        flex-shrink: 0;
+      }
+
+      .timeline-page {
+        width: 12rem;
+        height: 15rem;
+        background-color: var(--bg-white);
+        color: var(--secondary);
+        border: 1px solid var(--border-light);
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        font-size: 1.3rem;
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+      }
+
+      body.dark-theme .timeline-page {
+        background-color: var(--bg-light);
+        color: var(--secondary);
+      }
+
+      .timeline-page.active {
+        border: 2px solid var(--primary);
+        box-shadow: 0 0 0 0.4rem rgba(59, 130, 246, 0.2);
+      }
+
+      body.dark-theme .timeline-page.active {
+        box-shadow: 0 0 0 0.4rem rgba(95, 164, 252, 0.2);
+      }
+
+      .timeline-page:hover:not(.active) {
+        transform: scale(1.05);
+        border-color: var(--primary-light);
+        box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.1);
+      }
+
+      .add-page {
+        background-color: var(--bg-light);
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      body.dark-theme .add-page {
+        background-color: var(--bg-white);
+      }
+
+      .add-page:hover {
+        transform: scale(1.05);
+        background-color: var(--primary-light);
+      }
+
+      .add-page-icon {
+        width: 4rem;
+        height: 4rem;
+        color: var(--primary);
+        transition: color var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .add-page:hover .add-page-icon {
+        color: white;
+      }
+
+      .page-number {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-light);
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 0.2rem 0.4rem;
+        border-radius: var(--border-radius-sm);
+      }
+
+      body.dark-theme .page-number {
+        background-color: rgba(26, 26, 26, 0.7);
+      }
+
+      /* PANEL EXPANDED STYLES */
+      .panel-expanded {
+        width: 35rem;
+        background-color: var(--bg-white);
+        border-left: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: width var(--transition-speed-normal) var(--transition-cubic),
+          background-color var(--transition-speed-normal)
+            var(--transition-cubic),
+          border-left var(--transition-speed-normal) var(--transition-cubic);
+        flex-shrink: 0;
+        box-shadow: inset 0.2rem 0 0.5rem rgba(0, 0, 0, 0.02);
+      }
+
+      .panel-expanded.collapsed {
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+        border-left: none;
+      }
+
+      .panel-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .panel-tab {
+        flex: 1;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-light);
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .panel-tab.active {
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+      }
+
+      .panel-tab:hover:not(.active) {
+        color: var(--secondary);
+        background-color: var(--bg-light);
+      }
+
+      .panel-content {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--secondary);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .section-title svg {
+        width: 2rem;
+        height: 2rem;
+        color: var(--primary);
+      }
+
+      .ai-generator {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .prompt-input {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .input-field {
+        flex: 1;
+        padding: 1.2rem 1.5rem;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-light);
+        font-size: 1.4rem;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        background-color: var(--bg-white);
+        color: var(--secondary);
+        font-family: inherit;
+      }
+
+      body.dark-theme .input-field {
+        background-color: var(--bg-light);
+        border-color: var(--border-light);
+        color: var(--secondary);
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      }
+
+      body.dark-theme .input-field:focus {
+        box-shadow: 0 0 0 2px rgba(95, 164, 252, 0.2);
+      }
+
+      .generate-btn {
+        padding: 1.2rem 2rem;
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .generate-btn svg {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+
+      .generate-btn:hover {
+        transform: scale(1.03) translateY(-1px);
+        box-shadow: 0 0.4rem 1rem rgba(59, 130, 246, 0.3);
+      }
+
+      .generate-btn:active {
+        transform: scale(0.98) translateY(0px);
+      }
+
+      .generation-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .option-btn {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--bg-light);
+        border: 1px solid var(--border-light);
+        border-radius: 3rem;
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        color: var(--secondary);
+      }
+
+      body.dark-theme .option-btn {
+        background-color: var(--bg-white);
+        border-color: var(--border-light);
+        color: var(--secondary);
+      }
+
+      .option-btn:hover,
+      .option-btn.active {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        transform: translateY(-1px);
+      }
+
+      body.dark-theme .option-btn:hover,
+      body.dark-theme .option-btn.active {
+        background-color: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+      }
+
+      /* GENERATED IMAGES STYLES */
+      .generated-images {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .generated-image {
+        aspect-ratio: 1;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        position: relative;
+        cursor: grab;
+        box-shadow: var(--box-shadow);
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--bg-light);
+      }
+
+      body.dark-theme .generated-image {
+        background-color: var(--bg-white);
+        box-shadow: 0 0.2rem 0.5rem rgba(255, 255, 255, 0.05);
+      }
+
+      .generated-image:hover {
+        transform: scale(1.03);
+        box-shadow: var(--box-shadow-hover);
+      }
+
+      body.dark-theme .generated-image:hover {
+        box-shadow: 0 0.4rem 1rem rgba(255, 255, 255, 0.1);
+      }
+
+      .generated-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .generated-image .placeholder-text {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .image-actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        gap: 0.5rem;
+        opacity: 0;
+        transition: opacity var(--transition-speed-fast) var(--transition-cubic),
+          transform var(--transition-speed-fast) var(--transition-cubic);
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 0.8rem 0.5rem;
+        transform: translateY(100%);
+        border-bottom-left-radius: var(--border-radius);
+        border-bottom-right-radius: var(--border-radius);
+      }
+
+      body.dark-theme .image-actions {
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .generated-image:hover .image-actions {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .image-action-btn {
+        width: auto;
+        padding: 0.6rem 1rem;
+        height: 2.8rem;
+        border-radius: var(--border-radius-sm);
+        background-color: rgba(255, 255, 255, 0.95);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        border: none;
+        color: #333;
+        font-size: 1.2rem;
+        font-weight: 500;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        flex-shrink: 0;
+      }
+
+      body.dark-theme .image-action-btn {
+        background-color: rgba(50, 50, 50, 0.9);
+        color: var(--secondary);
+      }
+
+      .image-action-btn svg {
+        width: 1.4rem;
+        height: 1.4rem;
+        margin-right: 0.4rem;
+      }
+
+      .image-action-btn:hover {
+        background-color: white;
+        color: var(--primary);
+        transform: translateY(-2px);
+      }
+
+      body.dark-theme .image-action-btn:hover {
+        background-color: var(--bg-light);
+        color: var(--primary);
+      }
+
+      /* BUBBLE STYLES */
+      .bubble-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .bubble-option {
+        aspect-ratio: 1.3/1;
+        border: 1px solid var(--border-light);
+        border-radius: var(--border-radius);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        background-color: var(--bg-white);
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+      }
+
+      body.dark-theme .bubble-option {
+        background-color: var(--bg-light);
+      }
+
+      .bubble-option:hover,
+      .bubble-option.active {
+        border-color: var(--primary);
+        background-color: var(--bg-light);
+        transform: scale(1.05);
+        box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark-theme .bubble-option:hover,
+      body.dark-theme .bubble-option.active {
+        background-color: var(--bg-white);
+      }
+
+      .bubble-preview {
+        width: 80%;
+        height: 80%;
+      }
+
+      .bubble-preview path {
+        stroke: var(--secondary);
+      }
+
+      body.dark-theme .bubble-preview path {
+        fill: var(--bg-light);
+        stroke: var(--text-light);
+      }
+
+      /* PROPERTIES STYLES */
+      .properties-section {
+        margin-bottom: 2.5rem;
+      }
+
+      .property-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .property-label {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--secondary);
+        flex-shrink: 0;
+        margin-right: 1rem;
+      }
+
+      .property-control {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+      }
+
+      .color-picker {
+        width: 3rem;
+        height: 3rem;
+        border: 1px solid var(--border-light);
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        overflow: hidden;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: transparent;
+      }
+
+      .color-picker::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+
+      .color-picker::-webkit-color-swatch {
+        border: none;
+        border-radius: 0.4rem;
+      }
+
+      .color-picker::-moz-color-swatch {
+        border: none;
+        border-radius: 0.4rem;
+      }
+
+      .slider-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-grow: 1;
+      }
+
+      .slider {
+        width: 100%;
+        flex-grow: 1;
+        accent-color: var(--primary);
+      }
+
+      .slider-value {
+        width: 4rem;
+        text-align: center;
+        font-size: 1.4rem;
+        color: var(--text-light);
+      }
+
+      .button-group {
+        display: flex;
+        border: 1px solid var(--border-light);
+        border-radius: var(--border-radius-sm);
+        overflow: hidden;
+      }
+
+      .group-btn {
+        padding: 0.8rem;
+        background-color: var(--bg-white);
+        border: none;
+        border-right: 1px solid var(--border-light);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--secondary);
+        transition: background-color var(--transition-speed-fast)
+            var(--transition-cubic),
+          color var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      body.dark-theme .group-btn {
+        background-color: var(--bg-light);
+        border-right-color: var(--border-light);
+      }
+
+      .group-btn svg {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+
+      .group-btn:last-child {
+        border-right: none;
+      }
+
+      .group-btn:hover,
+      .group-btn.active {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      body.dark-theme .group-btn:hover,
+      body.dark-theme .group-btn.active {
+        background-color: var(--primary);
+        color: #fff;
+      }
+
+      /* TEXT PROPERTIES STYLES */
+      .font-select {
+        padding: 0.8rem 1.2rem;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--border-light);
+        font-size: 1.4rem;
+        width: 100%;
+        background-color: var(--bg-white);
+        color: var(--secondary);
+        font-family: inherit;
+      }
+
+      body.dark-theme .font-select {
+        background-color: var(--bg-light);
+      }
+
+      .text-align-buttons {
+        display: flex;
+      }
+
+      .font-size-input {
+        width: 6rem;
+        padding: 0.8rem;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--border-light);
+        font-size: 1.4rem;
+        text-align: center;
+        background-color: var(--bg-white);
+        color: var(--secondary);
+      }
+
+      body.dark-theme .font-size-input {
+        background-color: var(--bg-light);
+      }
+
+      /* LAYOUT STYLES */
+      .layouts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .layout-option {
+        aspect-ratio: 0.7/1;
+        border: 1px solid var(--border-light);
+        border-radius: var(--border-radius);
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+        cursor: pointer;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        background-color: var(--bg-white);
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+      }
+
+      body.dark-theme .layout-option {
+        background-color: var(--bg-light);
+      }
+
+      .layout-option:hover,
+      .layout-option.active {
+        border-color: var(--primary);
+        background-color: var(--bg-light);
+        transform: scale(1.03);
+        box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark-theme .layout-option:hover,
+      body.dark-theme .layout-option.active {
+        background-color: var(--bg-white);
+      }
+
+      .layout-row {
+        flex: 1;
+        display: flex;
+        gap: 1rem;
+      }
+
+      .layout-cell {
+        flex: 1;
+        background-color: var(--primary-light);
+        border-radius: 0.4rem;
+        border: 1px dashed var(--primary);
+      }
+
+      /* TOOLBAR STYLES */
+      .toolbar {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--bg-white);
+        border-radius: var(--border-radius-lg);
+        box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.15);
+        padding: 1rem 1.5rem;
+        display: flex;
+        gap: 1.5rem;
+        z-index: 5;
+        transition: background-color var(--transition-speed-normal)
+            var(--transition-cubic),
+          box-shadow var(--transition-speed-normal) var(--transition-cubic);
+      }
+
+      body.dark-theme .toolbar {
+        box-shadow: 0 0.4rem 1.5rem rgba(255, 255, 255, 0.1);
+      }
+
+      .toolbar-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        color: var(--text-light);
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        padding: 0.7rem;
+        border-radius: var(--border-radius-sm);
+      }
+
+      .toolbar-btn:hover {
+        color: var(--primary);
+        background-color: var(--bg-light);
+      }
+
+      .toolbar-btn:active {
+        transform: scale(0.95);
+      }
+
+      .toolbar-btn-icon {
+        width: 2.4rem;
+        height: 2.4rem;
+      }
+
+      .toolbar-btn-label {
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+
+      /* CONTEXT MENU STYLES */
+      .context-menu {
+        position: absolute;
+        background-color: var(--bg-white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--box-shadow);
+        display: none;
+        z-index: 10;
+        min-width: 18rem;
+        overflow: hidden;
+      }
+
+      .context-menu.visible {
+        display: block;
+      }
+
+      .context-menu-item {
+        padding: 1rem 1.5rem;
+        font-size: 1.4rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--secondary);
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .context-menu-item svg {
+        width: 1.8rem;
+        height: 1.8rem;
+        color: var(--text-light);
+        transition: color var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .context-menu-item:hover svg {
+        color: var(--primary);
+      }
+
+      .context-menu-item:hover {
+        background-color: var(--bg-light);
+        color: var(--primary);
+      }
+
+      .context-menu-divider {
+        height: 1px;
+        background-color: var(--border-light);
+        margin: 0.5rem 0;
+      }
+
+      /* TEXT EDITOR STYLES */
+      .text-editor {
+        position: absolute;
+        background-color: var(--bg-white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 1rem;
+        display: none;
+        z-index: 10;
+      }
+
+      .text-editor.visible {
+        display: flex;
+        gap: 1rem;
+      }
+
+      /* LOADER STYLES */
+      .loader {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        margin: 2rem 0;
+        width: 100%;
+      }
+
+      .loader.visible {
+        display: flex;
+      }
+
+      .loader-spinner {
+        width: 4rem;
+        height: 4rem;
+        border: 0.4rem solid var(--bg-light);
+        border-top: 0.4rem solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      body.dark-theme .loader-spinner {
+        border-color: var(--bg-white);
+        border-top-color: var(--primary);
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ELEMENT PLACEHOLDER STYLES */
+      .element-placeholder {
+        border: 2px dashed var(--primary);
+        border-radius: var(--border-radius-sm);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary);
+        font-size: 1.8rem;
+        position: absolute;
+        background-color: rgba(59, 130, 246, 0.05);
+        text-align: center;
+        padding: 2rem;
+        user-select: none;
+      }
+
+      body.dark-theme .element-placeholder {
+        background-color: rgba(95, 164, 252, 0.08);
+      }
+
+      /* TOOLTIP STYLES */
+      .tooltip {
+        position: fixed;
+        background-color: rgba(10, 10, 10, 0.9);
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: var(--border-radius-sm);
+        font-size: 1.3rem;
+        z-index: 2000;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity var(--transition-speed-fast) var(--transition-cubic),
+          transform var(--transition-speed-fast) var(--transition-cubic);
+        white-space: nowrap;
+        transform: translateY(8px);
+        box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.2);
+      }
+
+      .tooltip.visible-tooltip {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* QUICK AI BUTTON STYLES */
+      .quick-ai-btn {
+        position: absolute;
+        bottom: 9rem;
+        right: 3rem;
+        width: 5.5rem;
+        height: 5.5rem;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: white;
+        box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.25);
+        z-index: 10;
+        transition: all var(--transition-speed-normal) var(--transition-cubic);
+      }
+
+      .quick-ai-btn:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.35);
+      }
+
+      .quick-ai-btn:active {
+        transform: scale(1.05) rotate(0deg);
+      }
+
+      .quick-ai-btn svg {
+        width: 2.8rem;
+        height: 2.8rem;
+      }
+
+      .quick-ai-btn .tooltip-text-indicator {
+        position: absolute;
+        top: -4.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--secondary);
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: var(--border-radius-sm);
+        font-size: 1.2rem;
+        white-space: nowrap;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: opacity var(--transition-speed-normal)
+          var(--transition-cubic);
+      }
+
+      body.dark-theme .quick-ai-btn .tooltip-text-indicator {
+        background-color: var(--bg-white);
+        color: var(--secondary);
+      }
+
+      /* AI POPUP STYLES */
+      .ai-popup {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        width: auto;
+        min-width: 32rem;
+        max-width: min(42rem, calc(100vw - 4rem));
+        max-height: calc(100vh - 10rem);
+        background-color: var(--bg-white);
+        border-radius: var(--border-radius-lg);
+        box-shadow: 0 0.8rem 2.5rem rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        padding: 2rem;
+        display: none;
+        flex-direction: column;
+        gap: 1.5rem;
+        transition: opacity var(--transition-speed-normal)
+            var(--transition-cubic),
+          transform var(--transition-speed-normal) var(--transition-cubic);
+        transform: translateY(20px) scale(0.95);
+        opacity: 0;
+        overflow-y: auto;
+      }
+
+      body.dark-theme .ai-popup {
+        box-shadow: 0 0.8rem 2.5rem rgba(255, 255, 255, 0.1);
+      }
+
+      .ai-popup.visible {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .ai-popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-light);
+        padding-bottom: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .ai-popup-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--secondary);
+      }
+
+      .ai-popup-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-light);
+        margin-top: 0.5rem;
+      }
+
+      .ai-popup-close {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: var(--text-light);
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        background-color: transparent;
+      }
+
+      .ai-popup-close svg {
+        width: 2rem;
+        height: 2rem;
+      }
+
+      .ai-popup-close:hover {
+        background-color: var(--bg-light);
+        color: var(--danger);
+      }
+
+      .ai-popup .prompt-input,
+      .ai-popup .generation-options {
+        flex-shrink: 0;
+      }
+
+      .ai-popup .generated-images {
+        overflow-y: auto;
+        padding-right: 0.5rem;
+        flex-grow: 1;
+      }
+
+      .ai-popup .image-action-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1.3rem;
+      }
+
+      /* CANVAS ELEMENT STYLES */
+      .canvas-element {
+        position: absolute;
+        cursor: move;
+        transition: all var(--transition-speed-fast) ease;
+        user-select: none;
+      }
+
+      .canvas-element.selected {
+        outline: 2px solid var(--primary);
+        box-shadow: 0 0 0 4px var(--primary-light),
+          0 0 15px var(--primary-light);
+      }
+
+      body.dark-theme .canvas-element.selected {
+        box-shadow: 0 0 0 4px var(--primary), 0 0 15px var(--primary);
+      }
+
+      .canvas-element.panel {
+        background-color: var(--bg-white);
+        border: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 1.4rem;
+        color: var(--text-light);
+        border-radius: 0.3rem;
+      }
+
+      .canvas-element.text {
+        padding: 1rem;
+        font-size: 1.6rem;
+        line-height: 1.4;
+        background-color: transparent;
+        color: var(--secondary);
+        border: 1px dashed transparent;
+      }
+
+      .canvas-element.text:hover {
+        border-color: var(--primary-light);
+      }
+
+      .canvas-element.bubble {
+        background-color: var(--bg-white);
+        border: 2px solid var(--secondary);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--secondary);
+      }
+
+      body.dark-theme .canvas-element.bubble {
+        border-color: var(--secondary);
+      }
+
+      .canvas-element.image-element {
+        background-color: var(--bg-light);
+        border-radius: 0.3rem;
+        overflow: hidden;
+      }
+
+      .canvas-element.image-element img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: inherit;
+      }
+
+      .resize-handle {
+        position: absolute;
+        width: 1.2rem;
+        height: 1.2rem;
+        background-color: var(--primary);
+        border: 2px solid var(--bg-white);
+        border-radius: 50%;
+        z-index: 5;
+        display: none;
+        transition: transform var(--transition-speed-fast)
+          var(--transition-cubic);
+      }
+
+      .resize-handle:hover {
+        transform: scale(1.2);
+      }
+
+      .resize-handle.top-left {
+        top: -0.6rem;
+        left: -0.6rem;
+        cursor: nwse-resize;
+      }
+
+      .resize-handle.top-right {
+        top: -0.6rem;
+        right: -0.6rem;
+        cursor: nesw-resize;
+      }
+
+      .resize-handle.bottom-left {
+        bottom: -0.6rem;
+        left: -0.6rem;
+        cursor: nesw-resize;
+      }
+
+      .resize-handle.bottom-right {
+        bottom: -0.6rem;
+        right: -0.6rem;
+        cursor: nwse-resize;
+      }
+
+      .canvas-element.selected .resize-handle {
+        display: block;
+      }
+
+      /* STYLE TEMPLATES STYLES */
+      .style-templates {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .style-template {
+        border: 1px solid var(--border-light);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        cursor: pointer;
+        transition: all var(--transition-speed-fast) var(--transition-cubic);
+        background-color: var(--bg-white);
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+      }
+
+      body.dark-theme .style-template {
+        background-color: var(--bg-light);
+      }
+
+      .style-template:hover {
+        transform: scale(1.03);
+        border-color: var(--primary);
+        box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.1);
+      }
+
+      .style-template-preview {
+        width: 100%;
+        height: 10rem;
+        object-fit: cover;
+        background-color: var(--bg-light);
+      }
+
+      body.dark-theme .style-template-preview {
+        background-color: var(--bg-white);
+      }
+
+      .style-template-name {
+        padding: 1rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+        text-align: center;
+        color: var(--secondary);
+      }
+
+      /* FORMATTING BAR STYLES */
+      .formatting-bar {
+        position: absolute;
+        display: none;
+        background-color: var(--bg-white);
+        border-radius: var(--border-radius);
+        box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.15);
+        padding: 0.8rem;
+        z-index: 20;
+      }
+
+      .formatting-bar.visible {
+        display: flex;
+        gap: 0.8rem;
+      }
+
+      .formatting-bar .group-btn {
+        padding: 0.8rem;
+        border: none;
+      }
+
+      /* SMART TIP STYLES */
+      .smart-tip {
+        position: fixed;
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-size: 1.4rem;
+        z-index: 1500;
+        max-width: 28rem;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity var(--transition-speed-normal)
+            var(--transition-cubic),
+          transform var(--transition-speed-normal) var(--transition-cubic);
+        box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.15);
+        transform: translateY(10px) scale(0.95);
+      }
+
+      .smart-tip.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .smart-tip-icon {
+        margin-right: 0.8rem;
+        vertical-align: middle;
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+
+      /* HELPER TEXT STYLES */
+      .demo-helper-text {
+        font-size: 1.3rem;
+        color: var(--text-light);
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        padding: 0 1rem;
+        line-height: 1.5;
+      }
+
+      /* FEATURE CALLOUT STYLES */
+      .feature-callout {
+        position: absolute;
+        background-color: var(--primary-dark);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        z-index: 10;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+        }
+      }
+
+      .feature-callout::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 8px 8px 0;
+        border-style: solid;
+        border-color: var(--primary-dark) transparent transparent;
+      }
+
+      /* Status message styles */
+      .status-message {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--bg-white);
+        color: var(--secondary);
+        padding: 1rem 2rem;
+        border-radius: var(--border-radius);
+        font-size: 1.4rem;
+        font-weight: 600;
+        box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.15);
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity var(--transition-speed-normal)
+            var(--transition-cubic),
+          transform var(--transition-speed-normal) var(--transition-cubic);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transform: translateX(-50%) translateY(10px);
+        pointer-events: none;
+      }
+
+      .status-message.success {
+        background-color: var(--success);
+        color: white;
+      }
+
+      .status-message.visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .status-message svg {
+        width: 2rem;
+        height: 2rem;
+      }
+
+      /* Canvas element badge styles */
+      .element-badge {
+        position: absolute;
+        top: -1.2rem;
+        right: -1.2rem;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        width: 2.4rem;
+        height: 2.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: opacity var(--transition-speed-fast) var(--transition-cubic);
+      }
+
+      .canvas-element:hover .element-badge {
+        opacity: 1;
+      }
+
+      .element-badge svg {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
+
+      /* Button hover scale effect */
+      .scale-on-hover {
+        transition: transform var(--transition-speed-fast)
+          var(--transition-cubic);
+      }
+
+      .scale-on-hover:hover {
+        transform: scale(1.05);
+      }
+
+      /* MOBILE RESPONSIVE STYLES */
+      @media (max-width: 1024px) {
+        .panel-expanded {
+          width: 30rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          font-size: 9px;
+        }
+
+        .header {
+          padding: 1rem;
+          height: auto;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .header-left {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .header-actions {
+          gap: 0.8rem;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .btn {
+          padding: 0.8rem 1.2rem;
+          font-size: 1.3rem;
+        }
+
+        .main-container {
+          flex-direction: column;
+        }
+
+        .tools-sidebar {
+          width: 100%;
+          height: 6rem;
+          flex-direction: row;
+          overflow-x: auto;
+          padding: 0 1rem;
+          border-right: none;
+          border-bottom: 1px solid var(--border-light);
+        }
+
+        .tool-btn {
+          flex-shrink: 0;
+        }
+
+        .tool-btn.active {
+          border-left: none;
+          border-bottom: 3px solid var(--primary);
+        }
+
+        .panel-expanded {
+          width: 100%;
+          position: fixed;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          z-index: 1001;
+          transform: translateX(100%);
+          transition: transform var(--transition-speed-normal)
+            var(--transition-cubic);
+        }
+
+        .panel-expanded.visible-panel {
+          transform: translateX(0);
+        }
+
+        .mobile-panel-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 1000;
+          display: none;
+          opacity: 0;
+          transition: opacity var(--transition-speed-normal)
+            var(--transition-cubic);
+        }
+
+        .mobile-panel-overlay.visible-overlay {
+          display: block;
+          opacity: 1;
+        }
+
+        .pages-timeline {
+          height: 15rem;
+        }
+
+        .toolbar {
+          gap: 1rem;
+          padding: 0.8rem 1rem;
+          bottom: 1rem;
+        }
+
+        .toolbar-btn-label {
+          display: none;
+        }
+
+        .toolbar-btn-icon {
+          width: 2.8rem;
+          height: 2.8rem;
+        }
+
+        .quick-ai-btn {
+          bottom: 7rem;
+          right: 1.5rem;
+          width: 5rem;
+          height: 5rem;
+        }
+
+        .quick-ai-btn svg {
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+
+        .ai-popup {
+          bottom: 1.5rem;
+          right: 1.5rem;
+          left: 1.5rem;
+          width: auto;
+          max-width: calc(100vw - 3rem);
+          max-height: calc(100vh - 8rem);
+          transform: translateY(100%) scale(0.95);
+        }
+
+        .ai-popup.visible {
+          transform: translateY(0) scale(1);
+        }
+
+        .canvas-area {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-left">
+        <img
+          src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/602d767a7494a1456f75e4d8_winter-logo.svg"
+          alt="Winter Comics Logo"
+          class="brand-logo"
+          data-tooltip="Winter Comics Creator"
+        />
+        <button id="themeToggleBtn" data-tooltip="Switch to Dark Theme">
+          <svg
+            id="themeIconMoon"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            style="display: block"
+          >
+            <path
+              d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"
+            ></path>
+          </svg>
+          <svg
+            id="themeIconSun"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            style="display: none"
+          >
+            <path
+              d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM12 4c-1.1 0-2 .9-2 2v1h4V6c0-1.1-.9-2-2-2zm0 14c1.1 0 2-.9 2-2v-1h-4v1c0 1.1.9 2 2 2zm-8-6c0-1.1.9-2 2-2h1v4H6c-1.1 0-2-.9-2-2zm14 0c0 1.1-.9 2-2 2h-1v-4h1c1.1 0 2 .9 2 2zM6.34 7.76l-.7-.7A10.004 10.004 0 0 0 3.5 12h2.05c.22-1.38.88-2.63 1.79-3.54zM17.66 16.24l.7.7A10.004 10.004 0 0 0 20.5 12h-2.05c-.22 1.38-.88 2.63-1.79 3.54z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button
+          class="btn btn-outline"
+          id="previewBtn"
+          data-tooltip="Preview your comic"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+            ></path>
+          </svg>
+          Preview
+        </button>
+        <button
+          class="btn btn-primary"
+          id="saveBtn"
+          data-tooltip="Save your progress"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
+            ></path>
+          </svg>
+          Save
+        </button>
+        <button
+          class="btn btn-primary"
+          id="publishBtn"
+          data-tooltip="Publish your comic"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5 4v2h14V4H5zm0 10h4v6h6v-6h4l-7-7-7 7z"></path>
+          </svg>
+          Publish
+        </button>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <aside class="tools-sidebar" id="toolsSidebar">
+        <div
+          class="tool-btn active"
+          id="aiToolBtn"
+          data-tool="ai"
+          data-tooltip="AI Tools Panel"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM7 10.82C5.84 10.4 5 9.3 5 8V7h2v3.82zM19 8c0 1.3-.84 2.4-2 2.82V7h2v1z"
+            ></path>
+          </svg>
+          <span class="tool-label">AI</span>
+        </div>
+        <div
+          class="tool-btn"
+          data-tool="layout"
+          data-tooltip="Panel Layout Options"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 18h17v-6H4v6zM4 5v6h17V5H4z"></path>
+          </svg>
+          <span class="tool-label">Layout</span>
+        </div>
+        <div class="tool-btn" data-tool="text" data-tooltip="Add Text Tool">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"></path>
+          </svg>
+          <span class="tool-label">Text</span>
+        </div>
+        <div
+          class="tool-btn"
+          data-tool="bubbles"
+          data-tooltip="Add Speech Bubbles"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"
+            ></path>
+          </svg>
+          <span class="tool-label">Bubbles</span>
+        </div>
+        <div
+          class="tool-btn"
+          data-tool="images"
+          data-tooltip="Manage Your Images"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
+            ></path>
+          </svg>
+          <span class="tool-label">Images</span>
+        </div>
+        <div
+          class="tool-btn"
+          data-tool="shapes"
+          data-tooltip="Add Shapes & Lines"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M11.13 5.31l-2.63 2.62 1.43 1.43 2.62-2.62-1.42-1.43zm0 13.38l-1.42-1.41 2.62-2.63 1.43 1.43-2.63 2.61zM6.09 8.46l-2.67-2.67C2.46 6.75 2 7.81 2 9h4c0-.54.03-1.06.09-1.54zm3.77 12.41c.48-.06 1-.09 1.54-.09v-4c-1.19 0-2.25.46-3.21 1.42l1.67 2.67zm9.04-6.09c.06-.48.09-1 .09-1.54H15c0 1.19.46 2.25 1.42 3.21l2.48-1.67zm-2.15-8.48c-.96-.96-2.02-1.42-3.21-1.42v4c.54 0 1.06.03 1.54.09l1.67-2.67zm8.22 1.53l-5.7 5.7 1.41 1.41 5.7-5.7c.39-.38.39-1.02 0-1.41-.38-.39-1.02-.39-1.41 0zM7.69 17.28l-1.41-1.41-5.7 5.7c-.39.39-.39 1.02 0 1.41.38.39 1.02.39 1.41 0l5.7-5.7z"
+            ></path>
+          </svg>
+          <span class="tool-label">Shapes</span>
+        </div>
+        <div
+          class="tool-btn"
+          data-tool="effects"
+          data-tooltip="Image Filters & Effects"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c1.17 0 2.29-.24 3.33-.67L12 12V3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7v14z"
+            ></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="tool-label">Effects</span>
+        </div>
+        <div
+          class="tool-btn"
+          id="mobileTogglePanelBtn"
+          data-tooltip="Open Editing Panel"
+          style="display: none"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+          </svg>
+          <span class="tool-label">Panel</span>
+        </div>
+      </aside>
+
+      <div class="central-area">
+        <div class="canvas-area">
+          <div class="canvas" id="comicCanvas">
+            <!-- SAMPLE ELEMENTS FOR DEMO -->
+            <div
+              class="canvas-element panel selected"
+              style="width: 300px; height: 250px; top: 50px; left: 50px"
+              id="panel1"
+              data-tooltip="A comic panel. Drag to move, use handles to resize."
+            >
+              <div class="element-badge" data-tooltip="Edit panel">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="resize-handle top-left"></div>
+              <div class="resize-handle top-right"></div>
+              <div class="resize-handle bottom-left"></div>
+              <div class="resize-handle bottom-right"></div>
+            </div>
+
+            <div
+              class="canvas-element bubble"
+              style="width: 200px; height: 100px; top: 100px; left: 400px"
+              id="bubble1"
+              data-tooltip="A speech bubble. Click to edit properties."
+            >
+              Sample dialogue text
+              <div class="element-badge" data-tooltip="Edit bubble">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="resize-handle top-left"></div>
+              <div class="resize-handle top-right"></div>
+              <div class="resize-handle bottom-left"></div>
+              <div class="resize-handle bottom-right"></div>
+            </div>
+
+            <div
+              class="canvas-element image-element"
+              style="width: 150px; height: 180px; top: 350px; left: 100px"
+              id="imageOnCanvas1"
+              data-tooltip="An image added to the canvas. Click to select."
+            >
+              <img
+                src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/6379a2d8722f0978a576a7e2_img_2010_10_05_04_00_04_0481_35698_xl.jpg"
+                alt="Placed Image"
+              />
+              <div class="element-badge" data-tooltip="Edit image">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="resize-handle top-left"></div>
+              <div class="resize-handle top-right"></div>
+              <div class="resize-handle bottom-left"></div>
+              <div class="resize-handle bottom-right"></div>
+            </div>
+
+            <!-- Feature callout to highlight AI integration -->
+            <div class="feature-callout" style="top: 20px; right: 150px">
+              NEW! Generate AI panels
+            </div>
+          </div>
+
+          <div class="canvas-controls">
+            <button
+              class="canvas-control-btn"
+              id="zoomInBtn"
+              data-tooltip="Zoom In"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5C16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm.5-7H9v2H7v1h2v2h1v-2h2V9h-2V7z"
+                ></path>
+              </svg>
+            </button>
+            <button
+              class="canvas-control-btn"
+              id="zoomOutBtn"
+              data-tooltip="Zoom Out"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5C16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm-2-5h4v1H7V9z"
+                ></path>
+              </svg>
+            </button>
+            <button
+              class="canvas-control-btn"
+              id="resetZoomBtn"
+              data-tooltip="Fit to Screen"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M5 15H3v4c0 1.1.9 2 2 2h4v-2H5v-4zM5 5h4V3H5c-1.1 0-2 .9-2 2v4h2V5zm14-2h-4v2h4v4h2V5c0-1.1-.9-2-2-2zm0 16h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4z"
+                ></path>
+              </svg>
+            </button>
+            <button
+              class="canvas-control-btn"
+              id="toggleGridBtn"
+              data-tooltip="Toggle Grid Lines"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M3 3v18h18V3H3zm8 16H5v-6h6v6zm0-8H5V5h6v6zm8 8h-6v-6h6v6zm0-8h-6V5h6v6z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="toolbar">
+            <div
+              class="toolbar-btn"
+              id="addPanelBtn"
+              data-tooltip="Add Comic Panel"
+            >
+              <svg
+                class="toolbar-btn-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M21 2H3v12h18V2zm-2 10H5V4h14v8zM3 22h18v-6H3v6zm2-4h14v2H5v-2z"
+                ></path>
+              </svg>
+              <span class="toolbar-btn-label">Panel</span>
+            </div>
+            <div
+              class="toolbar-btn"
+              id="addTextBtn"
+              data-tooltip="Add Text Box"
+            >
+              <svg
+                class="toolbar-btn-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"
+                ></path>
+              </svg>
+              <span class="toolbar-btn-label">Text</span>
+            </div>
+            <div
+              class="toolbar-btn"
+              id="addBubbleBtn"
+              data-tooltip="Add Speech Bubble"
+            >
+              <svg
+                class="toolbar-btn-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"
+                ></path>
+              </svg>
+              <span class="toolbar-btn-label">Bubble</span>
+            </div>
+            <div
+              class="toolbar-btn"
+              id="generateImageMainBtn"
+              data-tooltip="Generate AI Image"
+            >
+              <svg
+                class="toolbar-btn-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM7 10.82C5.84 10.4 5 9.3 5 8V7h2v3.82zM19 8c0 1.3-.84 2.4-2 2.82V7h2v1z"
+                ></path>
+              </svg>
+              <span class="toolbar-btn-label">AI Image</span>
+            </div>
+            <div
+              class="toolbar-btn"
+              id="uploadImageBtn"
+              data-tooltip="Upload Your Image"
+            >
+              <svg
+                class="toolbar-btn-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"></path>
+              </svg>
+              <span class="toolbar-btn-label">Upload</span>
+            </div>
+            <div class="toolbar-btn" id="drawBtn" data-tooltip="Drawing Tools">
+              <svg
+                class="toolbar-btn-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                ></path>
+              </svg>
+              <span class="toolbar-btn-label">Draw</span>
+            </div>
+          </div>
+
+          <div
+            class="quick-ai-btn scale-on-hover"
+            id="quickAiBtn"
+            data-tooltip="Quick AI Generate"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM7 10.82C5.84 10.4 5 9.3 5 8V7h2v3.82zM19 8c0 1.3-.84 2.4-2 2.82V7h2v1z"
+              ></path>
+            </svg>
+            <div class="tooltip-text-indicator" id="quickAiHelperText">
+              Click for quick AI generation!
+            </div>
+          </div>
+
+          <div class="smart-tip" id="aiToolSmartTip">
+            <svg class="smart-tip-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9v-2h2v2zm0-4H9V7h2v6z"
+              ></path>
+            </svg>
+            Use AI Tools to generate images without leaving your canvas.
+          </div>
+
+          <div class="ai-popup" id="aiPopup">
+            <div class="ai-popup-header">
+              <div>
+                <h3 class="ai-popup-title">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    style="vertical-align: middle; margin-right: 0.5rem"
+                  >
+                    <path
+                      d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM7 10.82C5.84 10.4 5 9.3 5 8V7h2v3.82zM19 8c0 1.3-.84 2.4-2 2.82V7h2v1z"
+                    ></path>
+                  </svg>
+                  Quick AI Generator
+                </h3>
+                <p class="ai-popup-subtitle" id="quickAiPopupSubtitle">
+                  Generate images instantly and add them to your comic.
+                </p>
+              </div>
+              <div
+                class="ai-popup-close"
+                id="aiPopupClose"
+                data-tooltip="Close Quick AI"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+            <div class="prompt-input">
+              <input
+                type="text"
+                class="input-field"
+                id="quickAiPrompt"
+                placeholder="Describe what you want to generate..."
+              />
+              <button
+                class="generate-btn"
+                id="quickGenerateBtn"
+                data-tooltip="Generate AI Content"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                  ></path>
+                </svg>
+                Generate
+              </button>
+            </div>
+            <div class="generation-options">
+              <button
+                class="option-btn active"
+                data-tooltip="Generate a full comic panel scene"
+              >
+                Panel
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Generate an isolated character"
+              >
+                Character
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Generate a background or scene element"
+              >
+                Scene
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Generate a specific object"
+              >
+                Object
+              </button>
+            </div>
+            <div class="loader" id="quickAiLoader">
+              <div class="loader-spinner"></div>
+            </div>
+            <div class="generated-images" id="quickGeneratedImages">
+              <div class="generated-image">
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/6379a2d8722f0978a576a7e2_img_2010_10_05_04_00_04_0481_35698_xl.jpg"
+                  alt="Generated AI Image 1"
+                />
+                <div class="image-actions">
+                  <button
+                    class="image-action-btn"
+                    data-tooltip="Add this image to your comic canvas"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                    </svg>
+                    Add to Canvas
+                  </button>
+                </div>
+              </div>
+              <div class="generated-image">
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/602d767a7494a1456f75e4d8_winter-logo.svg"
+                  alt="Generated AI Image 2"
+                />
+                <div class="image-actions">
+                  <button
+                    class="image-action-btn"
+                    data-tooltip="Add this image to your comic canvas"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                    </svg>
+                    Add to Canvas
+                  </button>
+                </div>
+              </div>
+              <div class="generated-image">
+                <div class="placeholder-text">
+                  Ready to generate more images! Try different prompts.
+                </div>
+              </div>
+            </div>
+            <p class="demo-helper-text" id="quickAiDemoHelper">
+              AI generated images can be added directly to your canvas with a
+              single click.
+            </p>
+          </div>
+        </div>
+        <div class="pages-timeline">
+          <div class="timeline-page active" data-tooltip="Page 1 (Current)">
+            <span class="page-number">1</span>
+            Page 1
+          </div>
+          <div class="timeline-page" data-tooltip="Page 2">
+            <span class="page-number">2</span>
+            Page 2
+          </div>
+          <div
+            class="timeline-page add-page"
+            data-tooltip="Add New Page to Comic"
+          >
+            <svg class="add-page-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-expanded" id="rightPanel">
+        <div class="panel-tabs">
+          <div
+            class="panel-tab active"
+            data-panel="ai-generator"
+            data-tooltip="Detailed AI Generation Options"
+          >
+            AI Generation
+          </div>
+          <div
+            class="panel-tab"
+            data-panel="layout"
+            data-tooltip="Page & Panel Layout Options"
+          >
+            Layout
+          </div>
+          <div
+            class="panel-tab"
+            data-panel="properties"
+            data-tooltip="Edit Selected Element"
+          >
+            Properties
+          </div>
+        </div>
+        <div class="panel-content">
+          <div class="ai-generator" id="aiGeneratorPanel">
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM7 10.82C5.84 10.4 5 9.3 5 8V7h2v3.82zM19 8c0 1.3-.84 2.4-2 2.82V7h2v1z"
+                ></path>
+              </svg>
+              AI Comic Panel Generator
+            </h3>
+            <p class="demo-helper-text">
+              Create professional-quality comic art in seconds with AI
+              generation tools.
+            </p>
+            <div class="prompt-input">
+              <input
+                type="text"
+                class="input-field"
+                id="aiPromptInput"
+                placeholder="Describe what you want to generate..."
+              />
+              <button
+                class="generate-btn"
+                id="generateBtnMain"
+                data-tooltip="Generate with current settings"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                  ></path>
+                </svg>
+                Generate
+              </button>
+            </div>
+            <div class="generation-options">
+              <button
+                class="option-btn active"
+                data-tooltip="Classic comic book art style"
+              >
+                Style: Comic
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Japanese manga art style"
+              >
+                Style: Manga
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Animated cartoon art style"
+              >
+                Style: Cartoon
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Photorealistic art style"
+              >
+                Style: Realistic
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Detailed illustration style"
+              >
+                Style: Illustration
+              </button>
+            </div>
+            <div class="generation-options">
+              <button
+                class="option-btn active"
+                data-tooltip="Square aspect ratio (1:1)"
+              >
+                Size: Square
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Wide aspect ratio (16:9)"
+              >
+                Size: Wide
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Tall aspect ratio (9:16)"
+              >
+                Size: Tall
+              </button>
+              <button
+                class="option-btn"
+                data-tooltip="Standard comic panel ratio"
+              >
+                Size: Panel
+              </button>
+            </div>
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6H8c0 3.31 2.69 6 6 6zm0-13c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                ></path>
+              </svg>
+              Style Templates
+            </h3>
+            <div class="style-templates">
+              <div
+                class="style-template"
+                data-tooltip="Apply 'Dynamic Action' Style Template"
+              >
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/602d767a7494a1456f75e4d8_winter-logo.svg"
+                  alt="Dynamic Action Style"
+                  class="style-template-preview"
+                />
+                <div class="style-template-name">Dynamic Action</div>
+              </div>
+              <div
+                class="style-template"
+                data-tooltip="Apply 'Noir Mystery' Style Template"
+              >
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/6379a2d8722f0978a576a7e2_img_2010_10_05_04_00_04_0481_35698_xl.jpg"
+                  alt="Noir Mystery Style"
+                  class="style-template-preview"
+                />
+                <div class="style-template-name">Noir Mystery</div>
+              </div>
+              <div
+                class="style-template"
+                data-tooltip="Apply 'Vintage Cartoon' Style Template"
+              >
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/602d767a7494a1456f75e4d8_winter-logo.svg"
+                  alt="Vintage Cartoon"
+                  class="style-template-preview"
+                />
+                <div class="style-template-name">Vintage Cartoon</div>
+              </div>
+              <div
+                class="style-template"
+                data-tooltip="Apply 'Sci-Fi Tech' Style Template"
+              >
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/6379a2d8722f0978a576a7e2_img_2010_10_05_04_00_04_0481_35698_xl.jpg"
+                  alt="Sci-Fi Tech"
+                  class="style-template-preview"
+                />
+                <div class="style-template-name">Sci-Fi Tech</div>
+              </div>
+            </div>
+            <div class="loader" id="aiGeneratorLoader">
+              <div class="loader-spinner"></div>
+            </div>
+            <div class="generated-images" id="generatedImagesMain">
+              <div class="generated-image">
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/6379a2d8722f0978a576a7e2_img_2010_10_05_04_00_04_0481_35698_xl.jpg"
+                  alt="Generated comic panel example 1"
+                />
+                <div class="image-actions">
+                  <button
+                    class="image-action-btn"
+                    data-tooltip="Insert into Canvas"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg
+                    >Insert
+                  </button>
+                  <button
+                    class="image-action-btn"
+                    data-tooltip="Download Image"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                      ></path></svg
+                    >Save
+                  </button>
+                </div>
+              </div>
+              <div class="generated-image">
+                <img
+                  src="https://assets-global.website-files.com/6009f54da1dde5402f66ce76/602d767a7494a1456f75e4d8_winter-logo.svg"
+                  alt="Generated comic panel example 2"
+                />
+                <div class="image-actions">
+                  <button
+                    class="image-action-btn"
+                    data-tooltip="Insert into Canvas"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg
+                    >Insert
+                  </button>
+                  <button
+                    class="image-action-btn"
+                    data-tooltip="Download Image"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                      ></path></svg
+                    >Save
+                  </button>
+                </div>
+              </div>
+            </div>
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"
+                ></path>
+              </svg>
+              Speech Bubbles
+            </h3>
+            <div class="bubble-options">
+              <div class="bubble-option" data-tooltip="Standard Speech Bubble">
+                <svg class="bubble-preview" viewBox="0 0 100 80">
+                  <path
+                    d="M50,5 C25,5 5,25 5,45 C5,55 10,65 20,70 L15,75 L30,70 C35,72 42,73 50,73 C75,73 95,53 95,33 C95,13 75,5 50,5 Z"
+                    fill="white"
+                    stroke="var(--secondary)"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div class="bubble-option" data-tooltip="Thought Bubble">
+                <svg class="bubble-preview" viewBox="0 0 100 80">
+                  <ellipse
+                    cx="50"
+                    cy="35"
+                    rx="45"
+                    ry="25"
+                    fill="white"
+                    stroke="var(--secondary)"
+                    stroke-width="2"
+                  />
+                  <ellipse
+                    cx="30"
+                    cy="65"
+                    rx="5"
+                    ry="3"
+                    fill="white"
+                    stroke="var(--secondary)"
+                    stroke-width="2"
+                  />
+                  <ellipse
+                    cx="20"
+                    cy="72"
+                    rx="3"
+                    ry="2"
+                    fill="white"
+                    stroke="var(--secondary)"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div class="bubble-option" data-tooltip="Shout/Jagged Bubble">
+                <svg class="bubble-preview" viewBox="0 0 100 80">
+                  <path
+                    d="M5,40 L20,30 L25,45 L40,25 L50,50 L60,25 L75,45 L80,30 L95,40 L85,55 L90,70 L70,65 L60,75 L40,60 L30,75 L20,60 L10,70 L5,55Z"
+                    fill="white"
+                    stroke="var(--secondary)"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div class="bubble-option" data-tooltip="Rectangular Caption Box">
+                <svg class="bubble-preview" viewBox="0 0 100 80">
+                  <rect
+                    x="10"
+                    y="20"
+                    width="80"
+                    height="40"
+                    fill="white"
+                    stroke="var(--secondary)"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                ></path>
+              </svg>
+              Character Generator
+            </h3>
+            <div class="prompt-input">
+              <input
+                type="text"
+                class="input-field"
+                placeholder="Describe a character to generate..."
+              />
+              <button class="generate-btn" data-tooltip="Generate character">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                  ></path>
+                </svg>
+                Generate
+              </button>
+            </div>
+          </div>
+
+          <div class="layout-panel" id="layoutPanel" style="display: none">
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 18h17v-6H4v6zM4 5v6h17V5H4z"></path>
+              </svg>
+              Page Layouts
+            </h3>
+            <p class="demo-helper-text">
+              Choose a pre-defined layout or create a custom one for your comic
+              page.
+            </p>
+            <div class="layouts-grid">
+              <div
+                class="layout-option active"
+                data-tooltip="Single Full Panel Layout"
+              >
+                <div class="layout-row"><div class="layout-cell"></div></div>
+              </div>
+              <div class="layout-option" data-tooltip="Two Columns Layout">
+                <div class="layout-row">
+                  <div class="layout-cell"></div>
+                  <div class="layout-cell"></div>
+                </div>
+              </div>
+              <div class="layout-option" data-tooltip="Three Columns Layout">
+                <div class="layout-row">
+                  <div class="layout-cell"></div>
+                  <div class="layout-cell"></div>
+                  <div class="layout-cell"></div>
+                </div>
+              </div>
+              <div class="layout-option" data-tooltip="Two Rows Layout">
+                <div class="layout-row"><div class="layout-cell"></div></div>
+                <div class="layout-row"><div class="layout-cell"></div></div>
+              </div>
+              <div class="layout-option" data-tooltip="2x2 Grid Layout">
+                <div class="layout-row">
+                  <div class="layout-cell"></div>
+                  <div class="layout-cell"></div>
+                </div>
+                <div class="layout-row">
+                  <div class="layout-cell"></div>
+                  <div class="layout-cell"></div>
+                </div>
+              </div>
+              <div class="layout-option" data-tooltip="Complex T-Shape Layout">
+                <div class="layout-row" style="flex-basis: 30%">
+                  <div class="layout-cell"></div>
+                </div>
+                <div class="layout-row" style="flex-basis: 70%">
+                  <div class="layout-cell" style="flex-basis: 30%"></div>
+                  <div class="layout-cell" style="flex-basis: 70%"></div>
+                </div>
+              </div>
+            </div>
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                ></path>
+              </svg>
+              Custom Layout
+            </h3>
+            <div class="property-row">
+              <span class="property-label">Columns</span>
+              <input
+                type="number"
+                class="input-field"
+                value="2"
+                min="1"
+                max="6"
+                style="width: 7rem"
+                data-tooltip="Number of columns (1-6)"
+              />
+            </div>
+            <div class="property-row">
+              <span class="property-label">Rows</span>
+              <input
+                type="number"
+                class="input-field"
+                value="2"
+                min="1"
+                max="6"
+                style="width: 7rem"
+                data-tooltip="Number of rows (1-6)"
+              />
+            </div>
+            <div class="property-row">
+              <span class="property-label">Gutter</span>
+              <div class="slider-wrapper">
+                <input
+                  type="range"
+                  min="0"
+                  max="50"
+                  value="10"
+                  class="slider"
+                  id="gutterSlider"
+                /><span class="slider-value">10px</span>
+              </div>
+            </div>
+            <button
+              class="btn btn-primary"
+              style="margin-top: 2rem; width: 100%"
+              data-tooltip="Apply custom layout to current page"
+            >
+              Apply Layout
+            </button>
+          </div>
+
+          <div
+            class="properties-panel"
+            id="propertiesPanel"
+            style="display: none"
+          >
+            <div id="noSelectionInfo">
+              <p
+                style="
+                  font-size: 1.4rem;
+                  color: var(--text-light);
+                  text-align: center;
+                  margin-top: 3rem;
+                  padding: 2rem;
+                  background-color: var(--bg-light);
+                  border-radius: var(--border-radius);
+                "
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  style="
+                    width: 4rem;
+                    height: 4rem;
+                    display: block;
+                    margin: 0 auto 1.5rem;
+                  "
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1-8h-2V7h2v2z"
+                  ></path>
+                </svg>
+                Select an element on the canvas (panel, text, bubble, or image)
+                to edit its properties here.
+              </p>
+            </div>
+
+            <div id="panelProperties" style="display: none">
+              <h3 class="section-title">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M3 17h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-4h18V3H3v2z"
+                  ></path>
+                </svg>
+                Panel Properties
+              </h3>
+              <div class="property-row">
+                <span class="property-label">Width</span
+                ><input
+                  type="number"
+                  class="input-field"
+                  value="300"
+                  id="panelWidth"
+                /><span style="font-size: 1.4rem">px</span>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Height</span
+                ><input
+                  type="number"
+                  class="input-field"
+                  value="250"
+                  id="panelHeight"
+                /><span style="font-size: 1.4rem">px</span>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Background</span
+                ><input
+                  type="color"
+                  value="#FFFFFF"
+                  class="color-picker"
+                  id="panelBgColor"
+                />
+              </div>
+              <div class="property-row">
+                <span class="property-label">Border</span>
+                <div class="slider-wrapper">
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    value="1"
+                    class="slider"
+                    id="panelBorderWidth"
+                  /><span class="slider-value">1px</span>
+                </div>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Border Color</span
+                ><input
+                  type="color"
+                  value="#000000"
+                  class="color-picker"
+                  id="panelBorderColor"
+                />
+              </div>
+              <div class="property-row">
+                <span class="property-label">Border Radius</span>
+                <div class="slider-wrapper">
+                  <input
+                    type="range"
+                    min="0"
+                    max="50"
+                    value="3"
+                    class="slider"
+                    id="panelBorderRadius"
+                  /><span class="slider-value">3px</span>
+                </div>
+              </div>
+              <button
+                class="btn btn-primary"
+                style="margin-top: 2rem; width: 100%"
+                data-tooltip="Apply changes to panel"
+              >
+                Apply Changes
+              </button>
+            </div>
+
+            <div id="textProperties" style="display: none">
+              <h3 class="section-title">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"
+                  ></path>
+                </svg>
+                Text Properties
+              </h3>
+              <div
+                class="property-row"
+                style="flex-direction: column; align-items: stretch"
+              >
+                <span class="property-label" style="margin-bottom: 0.5rem"
+                  >Text Content</span
+                ><textarea
+                  class="input-field"
+                  style="width: 100%; height: 8rem"
+                  id="textContentArea"
+                >
+Sample Text</textarea
+                >
+              </div>
+              <div class="property-row">
+                <span class="property-label">Font</span
+                ><select class="font-select" id="textFont">
+                  <option>Arial</option>
+                  <option>Comic Sans MS</option>
+                  <option>Impact</option>
+                  <option>Bangers</option>
+                  <option>Nunito</option>
+                  <option>Lato</option>
+                </select>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Size</span
+                ><input
+                  type="number"
+                  value="16"
+                  class="font-size-input"
+                  id="textSize"
+                /><span style="font-size: 1.4rem">px</span>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Color</span
+                ><input
+                  type="color"
+                  value="#000000"
+                  class="color-picker"
+                  id="textColor"
+                />
+              </div>
+              <div class="property-row">
+                <span class="property-label">Align</span>
+                <div class="button-group text-align-buttons">
+                  <button
+                    class="group-btn active"
+                    data-align="left"
+                    data-tooltip="Align Left"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    class="group-btn"
+                    data-align="center"
+                    data-tooltip="Align Center"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    class="group-btn"
+                    data-align="right"
+                    data-tooltip="Align Right"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Weight</span>
+                <div class="button-group">
+                  <button
+                    class="group-btn"
+                    data-weight="normal"
+                    data-tooltip="Normal Weight"
+                  >
+                    Normal
+                  </button>
+                  <button
+                    class="group-btn active"
+                    data-weight="bold"
+                    data-tooltip="Bold Weight"
+                  >
+                    Bold
+                  </button>
+                </div>
+              </div>
+              <button
+                class="btn btn-primary"
+                style="margin-top: 2rem; width: 100%"
+                data-tooltip="Apply changes to text"
+              >
+                Apply Changes
+              </button>
+            </div>
+
+            <div id="imageProperties" style="display: none">
+              <h3 class="section-title">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
+                  ></path>
+                </svg>
+                Image Properties
+              </h3>
+              <div class="property-row">
+                <span class="property-label">Opacity</span>
+                <div class="slider-wrapper">
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="100"
+                    class="slider"
+                    id="imageOpacity"
+                  /><span class="slider-value">100%</span>
+                </div>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Border Radius</span>
+                <div class="slider-wrapper">
+                  <input
+                    type="range"
+                    min="0"
+                    max="50"
+                    value="3"
+                    class="slider"
+                    id="imageBorderRadius"
+                  /><span class="slider-value">3px</span>
+                </div>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Filters</span
+                ><select class="font-select" id="imageFilters">
+                  <option value="none">None</option>
+                  <option value="grayscale(100%)">Grayscale</option>
+                  <option value="sepia(100%)">Sepia</option>
+                  <option value="brightness(120%)">Brighten</option>
+                  <option value="contrast(150%)">High Contrast</option>
+                  <option value="blur(2px)">Slight Blur</option>
+                  <option value="saturate(200%)">Vibrant</option>
+                </select>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Border</span>
+                <div class="slider-wrapper">
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    value="0"
+                    class="slider"
+                    id="imageBorderWidth"
+                  /><span class="slider-value">0px</span>
+                </div>
+              </div>
+              <div class="property-row">
+                <span class="property-label">Border Color</span
+                ><input
+                  type="color"
+                  value="#000000"
+                  class="color-picker"
+                  id="imageBorderColor"
+                />
+              </div>
+              <button
+                class="btn btn-primary"
+                style="margin-top: 2rem; width: 100%"
+                data-tooltip="Replace Image"
+              >
+                Replace Image
+              </button>
+              <button
+                class="btn btn-outline"
+                style="margin-top: 1rem; width: 100%"
+                data-tooltip="Apply changes to image"
+              >
+                Apply Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-panel-overlay" id="mobilePanelOverlay"></div>
+
+    <!-- Context menu for right-click actions -->
+    <div class="context-menu" id="contextMenu">
+      <div class="context-menu-item" id="editElementMenu">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+          ></path>
+        </svg>
+        Edit Element
+      </div>
+      <div class="context-menu-item" id="duplicateElementMenu">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+          ></path>
+        </svg>
+        Duplicate
+      </div>
+      <div class="context-menu-item" id="bringForwardMenu">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2 20h20v-4H2v4zm2-3h16v2H4v-2zM4 5v7h16V5H4z"></path>
+        </svg>
+        Bring to Front
+      </div>
+      <div class="context-menu-divider"></div>
+      <div class="context-menu-item" id="deleteElementMenu">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+          ></path>
+        </svg>
+        Delete
+      </div>
+    </div>
+
+    <!-- Status message -->
+    <div class="status-message" id="statusMessage">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+        ></path>
+      </svg>
+      <span id="statusText">Changes saved successfully!</span>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Theme toggle functionality
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const moonIcon = document.getElementById('themeIconMoon');
+        const sunIcon = document.getElementById('themeIconSun');
+        const body = document.body;
+
+        themeToggleBtn.addEventListener('click', () => {
+          body.classList.toggle('dark-theme');
+          const isDarkMode = body.classList.contains('dark-theme');
+          moonIcon.style.display = isDarkMode ? 'none' : 'block';
+          sunIcon.style.display = isDarkMode ? 'block' : 'none';
+          themeToggleBtn.setAttribute(
+            'data-tooltip',
+            isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'
+          );
+        });
+
+        // Panel tab switching
+        const panelTabs = document.querySelectorAll('.panel-tab');
+        const panelContents = {
+          'ai-generator': document.getElementById('aiGeneratorPanel'),
+          layout: document.getElementById('layoutPanel'),
+          properties: document.getElementById('propertiesPanel'),
+        };
+
+        panelTabs.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            panelTabs.forEach((t) => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            Object.values(panelContents).forEach((content) => {
+              if (content) content.style.display = 'none';
+            });
+
+            const activePanelKey = tab.getAttribute('data-panel');
+            if (panelContents[activePanelKey]) {
+              panelContents[activePanelKey].style.display = 'block';
+            }
+          });
+        });
+
+        // Canvas element selection
+        const canvasElements = document.querySelectorAll('.canvas-element');
+        const noSelectionInfo = document.getElementById('noSelectionInfo');
+        const panelProperties = document.getElementById('panelProperties');
+        const textProperties = document.getElementById('textProperties');
+        const imageProperties = document.getElementById('imageProperties');
+
+        canvasElements.forEach((element) => {
+          element.addEventListener('click', (e) => {
+            // Prevent propagation to avoid deselection
+            e.stopPropagation();
+
+            // Deselect all elements
+            canvasElements.forEach((el) => el.classList.remove('selected'));
+
+            // Select clicked element
+            element.classList.add('selected');
+
+            // Switch to properties panel
+            panelTabs.forEach((t) => t.classList.remove('active'));
+            document
+              .querySelector('.panel-tab[data-panel="properties"]')
+              .classList.add('active');
+
+            // Hide all content panels and show properties panel
+            Object.values(panelContents).forEach((content) => {
+              if (content) content.style.display = 'none';
+            });
+            if (panelContents['properties'])
+              panelContents['properties'].style.display = 'block';
+
+            // Hide no selection message
+            if (noSelectionInfo) noSelectionInfo.style.display = 'none';
+
+            // Show appropriate properties panel based on element type
+            const elementType = element.classList.contains('panel')
+              ? 'panel'
+              : element.classList.contains('text')
+              ? 'text'
+              : element.classList.contains('bubble')
+              ? 'text'
+              : 'image';
+
+            if (panelProperties)
+              panelProperties.style.display =
+                elementType === 'panel' ? 'block' : 'none';
+            if (textProperties)
+              textProperties.style.display =
+                elementType === 'text' ? 'block' : 'none';
+            if (imageProperties)
+              imageProperties.style.display =
+                elementType === 'image' ? 'block' : 'none';
+          });
+        });
+
+        // Deselect when clicking on canvas
+        document
+          .getElementById('comicCanvas')
+          .addEventListener('click', (e) => {
+            if (e.target === document.getElementById('comicCanvas')) {
+              canvasElements.forEach((el) => el.classList.remove('selected'));
+              if (noSelectionInfo) noSelectionInfo.style.display = 'block';
+              if (panelProperties) panelProperties.style.display = 'none';
+              if (textProperties) textProperties.style.display = 'none';
+              if (imageProperties) imageProperties.style.display = 'none';
+            }
+          });
+
+        // Quick AI button and popup
+        const quickAiBtn = document.getElementById('quickAiBtn');
+        const aiPopup = document.getElementById('aiPopup');
+        const aiPopupClose = document.getElementById('aiPopupClose');
+        const quickAiPrompt = document.getElementById('quickAiPrompt');
+
+        if (quickAiBtn && aiPopup) {
+          quickAiBtn.addEventListener('click', () => {
+            aiPopup.classList.toggle('visible');
+            if (aiPopup.classList.contains('visible') && quickAiPrompt) {
+              quickAiPrompt.focus();
+            }
+          });
+        }
+
+        if (aiPopupClose && aiPopup) {
+          aiPopupClose.addEventListener('click', () => {
+            aiPopup.classList.remove('visible');
+          });
+        }
+
+        // Option buttons toggle
+        const optionBtns = document.querySelectorAll('.option-btn');
+        optionBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            // Find sibling buttons (within same parent)
+            const siblings = Array.from(
+              btn.parentElement.querySelectorAll('.option-btn')
+            );
+            // If button text contains these keywords, it should operate as a radio button
+            const isRadioGroup =
+              btn.textContent.includes('Style:') ||
+              btn.textContent.includes('Size:');
+
+            if (isRadioGroup) {
+              // Radio button behavior - only one active at a time
+              siblings.forEach((sibling) => {
+                sibling.classList.remove('active');
+              });
+              btn.classList.add('active');
+            } else {
+              // Toggle button behavior
+              btn.classList.toggle('active');
+            }
+          });
+        });
+
+        // Tooltips system
+        let activeTooltip = null;
+        const tooltipElement = document.createElement('div');
+        tooltipElement.className = 'tooltip';
+        document.body.appendChild(tooltipElement);
+
+        function showTooltip(element) {
+          const tooltipText = element.getAttribute('data-tooltip');
+          if (!tooltipText) return;
+
+          const rect = element.getBoundingClientRect();
+          tooltipElement.textContent = tooltipText;
+
+          // Position tooltip above the element
+          let left =
+            rect.left + rect.width / 2 - tooltipElement.offsetWidth / 2;
+          let top = rect.top - tooltipElement.offsetHeight - 8;
+
+          // Ensure tooltip stays within viewport
+          if (left < 10) left = 10;
+          if (left + tooltipElement.offsetWidth > window.innerWidth - 10) {
+            left = window.innerWidth - tooltipElement.offsetWidth - 10;
+          }
+
+          // If tooltip would go off the top, position it below the element
+          if (top < 10) {
+            top = rect.bottom + 8;
+          }
+
+          tooltipElement.style.left = `${left}px`;
+          tooltipElement.style.top = `${top}px`;
+          tooltipElement.classList.add('visible-tooltip');
+        }
+
+        function hideTooltip() {
+          tooltipElement.classList.remove('visible-tooltip');
+        }
+
+        // Add tooltip listeners
+        document.querySelectorAll('[data-tooltip]').forEach((element) => {
+          element.addEventListener('mouseenter', () => showTooltip(element));
+          element.addEventListener('mouseleave', hideTooltip);
+          element.addEventListener('focus', () => showTooltip(element));
+          element.addEventListener('blur', hideTooltip);
+        });
+
+        // Mobile panel toggle
+        const mobileToggleBtn = document.getElementById('mobileTogglePanelBtn');
+        const rightPanel = document.getElementById('rightPanel');
+        const mobileOverlay = document.getElementById('mobilePanelOverlay');
+
+        function handleMobileLayout() {
+          if (window.innerWidth <= 768) {
+            if (mobileToggleBtn) mobileToggleBtn.style.display = 'flex';
+            if (rightPanel && !rightPanel.classList.contains('visible-panel')) {
+              rightPanel.classList.add('collapsed');
+            }
+          } else {
+            if (mobileToggleBtn) mobileToggleBtn.style.display = 'none';
+            if (rightPanel) {
+              rightPanel.classList.remove('collapsed');
+              rightPanel.classList.remove('visible-panel');
+            }
+            if (mobileOverlay)
+              mobileOverlay.classList.remove('visible-overlay');
+          }
+        }
+
+        if (mobileToggleBtn && rightPanel && mobileOverlay) {
+          mobileToggleBtn.addEventListener('click', () => {
+            rightPanel.classList.toggle('visible-panel');
+            rightPanel.classList.toggle('collapsed');
+            mobileOverlay.classList.toggle('visible-overlay');
+          });
+
+          mobileOverlay.addEventListener('click', () => {
+            rightPanel.classList.remove('visible-panel');
+            rightPanel.classList.add('collapsed');
+            mobileOverlay.classList.remove('visible-overlay');
+          });
+        }
+
+        window.addEventListener('resize', handleMobileLayout);
+        handleMobileLayout();
+
+        // Demo functionality for buttons
+        const saveBtn = document.getElementById('saveBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const statusText = document.getElementById('statusText');
+
+        if (saveBtn && statusMessage && statusText) {
+          saveBtn.addEventListener('click', () => {
+            statusText.textContent = 'Comic saved successfully!';
+            statusMessage.classList.add('success');
+            statusMessage.classList.add('visible');
+
+            setTimeout(() => {
+              statusMessage.classList.remove('visible');
+            }, 3000);
+          });
+        }
+
+        // Context menu
+        const contextMenu = document.getElementById('contextMenu');
+        const canvasElement = document.querySelector('.canvas');
+
+        document.addEventListener('contextmenu', (e) => {
+          // Only show context menu for canvas elements
+          if (e.target.closest('.canvas-element')) {
+            e.preventDefault();
+
+            if (contextMenu) {
+              // Position menu at cursor
+              contextMenu.style.left = `${e.pageX}px`;
+              contextMenu.style.top = `${e.pageY}px`;
+              contextMenu.classList.add('visible');
+
+              // Set active target for context menu actions
+              contextMenu.dataset.targetId =
+                e.target.closest('.canvas-element').id;
+            }
+          }
+        });
+
+        // Hide context menu on click outside
+        document.addEventListener('click', () => {
+          if (contextMenu) contextMenu.classList.remove('visible');
+        });
+
+        // Handle context menu actions
+        document
+          .getElementById('editElementMenu')
+          ?.addEventListener('click', () => {
+            const targetId = contextMenu.dataset.targetId;
+            if (targetId) {
+              const element = document.getElementById(targetId);
+              if (element) {
+                // Simulate click to select and show properties
+                element.click();
+              }
+            }
+          });
+
+        document
+          .getElementById('deleteElementMenu')
+          ?.addEventListener('click', () => {
+            const targetId = contextMenu.dataset.targetId;
+            if (targetId) {
+              const element = document.getElementById(targetId);
+              if (element) {
+                // Remove element with animation
+                element.style.opacity = '0';
+                element.style.transform = 'scale(0.8)';
+                setTimeout(() => element.remove(), 300);
+
+                // Show status message
+                statusText.textContent = 'Element deleted';
+                statusMessage.classList.add('visible');
+                setTimeout(
+                  () => statusMessage.classList.remove('visible'),
+                  2000
+                );
+              }
+            }
+          });
+
+        // Loader simulation for AI generation
+        const quickGenerateBtn = document.getElementById('quickGenerateBtn');
+        const quickAiLoader = document.getElementById('quickAiLoader');
+        const quickGeneratedImages = document.getElementById(
+          'quickGeneratedImages'
+        );
+
+        if (quickGenerateBtn && quickAiLoader && quickGeneratedImages) {
+          quickGenerateBtn.addEventListener('click', () => {
+            // Show loader
+            quickAiLoader.classList.add('visible');
+
+            // Simulate loading
+            setTimeout(() => {
+              quickAiLoader.classList.remove('visible');
+
+              // Show status message
+              statusText.textContent = 'AI image generated successfully!';
+              statusMessage.classList.add('success');
+              statusMessage.classList.add('visible');
+              setTimeout(() => statusMessage.classList.remove('visible'), 2000);
+            }, 1500);
+          });
+        }
+
+        // Feature callout animation
+        const featureCallout = document.querySelector('.feature-callout');
+        if (featureCallout) {
+          setTimeout(() => {
+            featureCallout.style.opacity = '0';
+            setTimeout(() => featureCallout.remove(), 500);
+          }, 5000);
+        }
+
+        console.log('Winter Comics UI initialized!');
+      });
+    </script>
+  </body>
+</html>
